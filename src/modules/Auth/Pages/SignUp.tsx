@@ -29,11 +29,11 @@ const SignUp = () => {
   const { mutate, isPending } = useMutation<
     SignUpResponse,
     AxiosError<{ code: number; message: string }>,
-    Omit<SignUpForm, "confirmPassword" | "companyName"> & { tenantName: string }
+    SignUpForm
   >({
     mutationKey: ["sign-up"],
     mutationFn: (data) => {
-      return axiosInstance.post("/auth/register", data);
+      return axiosInstance.post("/auth/sign-up", data);
     },
     onError: ({ message, response }) => {
       toast.error(`SignUp failed. ${response?.data?.message ?? message ?? ""}`);
@@ -50,12 +50,7 @@ const SignUp = () => {
     <Form
       control={control}
       onSubmit={({ data }) => {
-        mutate({
-          email: data?.email,
-          password: data?.password,
-          name: data?.name,
-          tenantName: data?.companyName,
-        });
+        mutate(data);
       }}
       className="grid place-content-center min-h-screen"
     >
@@ -71,8 +66,15 @@ const SignUp = () => {
             <Input
               inputType="controlled"
               control={control}
-              name="name"
-              label={"Name"}
+              name="firstName"
+              label={"First name"}
+              placeholder="John doe"
+            />
+            <Input
+              inputType="controlled"
+              control={control}
+              name="lastName"
+              label={"Last Name"}
               placeholder="John doe"
             />
             <Input
@@ -90,14 +92,6 @@ const SignUp = () => {
               label={"Password"}
               type="password"
               placeholder="••••••••"
-            />
-            <Input
-              inputType="controlled"
-              control={control}
-              name="companyName"
-              label={"Company Name"}
-              type="text"
-              placeholder="Company..."
             />
             <Button type="submit" className="w-full" isDisabled={isPending}>
               {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}

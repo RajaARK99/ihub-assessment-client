@@ -2,26 +2,21 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { axiosInstance } from "@/global";
 
-import { Meeting } from "@/modules/Home";
-
 import { PaginatedResponse } from "@/types";
+import { RoleEnum } from "@/modules/Users";
 
-const useMeetings = ({
-  startDate,
-  endDate,
-  allMeeting,
+const useUsers = ({
+  role,
+  search,
 }: {
-  startDate: number;
-  endDate: number;
-  allMeeting?: boolean;
+  search?: string | null;
+  role?: RoleEnum | null;
 }) => {
   return useInfiniteQuery({
-    queryKey: allMeeting ? ["all-meetings"] : ["meetings", startDate, endDate],
+    queryKey: ["users", role, search],
     queryFn: async ({ pageParam }) => {
-      const { data } = await axiosInstance.get<PaginatedResponse<Meeting>>(
-        allMeeting
-          ? `/meetings/paginate?page=${pageParam}&perPage=10`
-          : `/meetings/paginate?page=${pageParam}&perPage=10&startDate=${startDate}&endDate=${endDate}`
+      const { data } = await axiosInstance.get<PaginatedResponse>(
+        `/users?page=${pageParam}&limit=10&search=${search}&role=${role}`
       );
       return data;
     },
@@ -32,22 +27,4 @@ const useMeetings = ({
   });
 };
 
-const useCustomers = ({ search }: { search: string | null }) => {
-  return useInfiniteQuery({
-    queryKey: ["customers", search],
-    queryFn: async ({ pageParam }) => {
-      const { data } = await axiosInstance.get<
-        PaginatedResponse<{ name: string; email: string }>
-      >(
-        `/customers/paginate?page=${pageParam}&perPage=10&searchText=${search}`
-      );
-      return data;
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      return lastPage?.nextPage;
-    },
-  });
-};
-
-export { useMeetings, useCustomers };
+export { useUsers };

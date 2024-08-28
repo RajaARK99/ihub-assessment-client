@@ -37,14 +37,14 @@ const SignIn = () => {
   >({
     mutationKey: ["sign-in"],
     mutationFn: (data) => {
-      return axiosInstance.post("/auth/login", data);
+      return axiosInstance.post("/auth/sign-in", data);
     },
     onError: ({ response, message }) => {
       toast.error(`SignIn failed. ${response?.data?.message ?? message ?? ""}`);
     },
     onSuccess: ({ data }) => {
       const user = data?.user;
-      const token = data?.token?.accessToken;
+      const token = data?.token;
 
       if (user?.id && token) {
         localStorage?.setItem("token", token);

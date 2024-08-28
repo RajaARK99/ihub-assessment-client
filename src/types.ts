@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { User } from "./modules/Users";
 
 type Nullish<T> = T extends object
   ? {
@@ -8,8 +9,8 @@ type Nullish<T> = T extends object
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 
-type PaginatedResponse<T> = {
-  docs: T[] | null;
+type PaginatedResponse = {
+  users: User[] | null;
   hasNextPage: boolean;
   hasPrevPage: boolean;
   limit: number | null;

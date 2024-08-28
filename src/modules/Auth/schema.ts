@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { emailZodSchema, nameZodSchema, passwordZodSchema } from "@/global";
+import { roleEnum } from "../Users";
 
 const signInFormSchema = z.object({
   email: emailZodSchema(true),
@@ -8,37 +9,11 @@ const signInFormSchema = z.object({
 });
 
 const signUpFormSchema = z.object({
-  name: nameZodSchema(true),
+  firstName: nameZodSchema(true),
+  lastName: nameZodSchema(true),
   email: emailZodSchema(true),
   password: passwordZodSchema,
-  companyName: nameZodSchema(true),
+  role: roleEnum.nullish(),
 });
 
-const verifyOTPFormSchema = z.object({
-  otp: z
-    .string()
-    .min(6, { message: "Enter valid otp." })
-    .max(6, { message: "Enter valid otp." }),
-});
-
-const forgetPasswordEmailFormSchema = z.object({
-  email: emailZodSchema(true),
-});
-
-const forgetPasswordSearchSchema = z.object({
-  email: emailZodSchema(true),
-  resetToken: nameZodSchema(true, 50),
-});
-
-const forgetPasswordResetPasswordSchema = z.object({
-  password: passwordZodSchema,
-});
-
-export {
-  signInFormSchema,
-  signUpFormSchema,
-  verifyOTPFormSchema,
-  forgetPasswordEmailFormSchema,
-  forgetPasswordSearchSchema,
-  forgetPasswordResetPasswordSchema,
-};
+export { signInFormSchema, signUpFormSchema };
