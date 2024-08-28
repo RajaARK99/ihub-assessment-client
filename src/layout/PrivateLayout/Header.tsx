@@ -1,11 +1,23 @@
+import {
+  Button,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components";
 import { Theme, useAuth, useTheme } from "@/components/AuthProvider";
+import { useNavigate } from "@tanstack/react-router";
 
-import { Moon, SunMoon } from "lucide-react";
+import { LogOut, Moon, SunMoon } from "lucide-react";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
 
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   const changeThemeHandler = (theme: Theme) => {
     setTheme(theme);
@@ -27,21 +39,64 @@ const Header = () => {
             {user?.email ?? "N/A"}
           </p>
         </div>{" "}
-        {theme === "light" ? (
-          <Moon
-            className="cursor-pointer text-muted-foreground"
-            onClick={() => {
-              changeThemeHandler("dark");
-            }}
-          />
-        ) : (
-          <SunMoon
-            className="cursor-pointer"
-            onClick={() => {
+        <Button
+          variant="ghost"
+          size="icon"
+          onPress={() => {
+            if (theme === "system" || theme === "dark") {
               changeThemeHandler("light");
-            }}
-          />
-        )}
+            }
+            if (theme === "light") {
+              changeThemeHandler("dark");
+            }
+          }}
+        >
+          {theme === "light" ? (
+            <Moon className="size-5 text-muted-foreground" />
+          ) : (
+            <SunMoon className="size-5" />
+          )}
+        </Button>
+        <DialogTrigger>
+          <Button variant="ghost" size="icon">
+            <LogOut className="size-4" />
+          </Button>
+
+          <DialogOverlay isDismissable={false}>
+            <DialogContent role="alertdialog" className="sm:max-w-[400px]">
+              {({ close }) => (
+                <>
+                  <DialogHeader>
+                    <DialogTitle>Logout</DialogTitle>
+                  </DialogHeader>
+                  <DialogDescription className="text-sm text-muted-foreground">
+                    Are you sure want to logout?
+                  </DialogDescription>
+                  <DialogFooter className="gap-2">
+                    <Button onPress={close} variant="outline">
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onPress={() => {
+                        localStorage.clear();
+                        setUser(null);
+                        setTimeout(() => {
+                          navigate({
+                            to: "/sign-in",
+                            replace: false,
+                          });
+                        }, 10);
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </DialogFooter>
+                </>
+              )}
+            </DialogContent>
+          </DialogOverlay>
+        </DialogTrigger>
       </div>
     </header>
   );
