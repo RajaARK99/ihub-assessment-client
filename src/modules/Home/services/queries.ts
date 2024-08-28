@@ -16,7 +16,7 @@ const useUsers = ({
     queryKey: ["users", role, search],
     queryFn: async ({ pageParam }) => {
       const { data } = await axiosInstance.get<PaginatedResponse>(
-        `/users?page=${pageParam}&limit=10&search=${search}&role=${role}`
+        `/users?page=${pageParam}&limit=10`
       );
       return data;
     },
