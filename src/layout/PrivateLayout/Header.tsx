@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-10 flex h-[68px] items-center justify-between gap-2 border-b border-foreground/10 bg-background/95 p-3 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center gap-2">
-        <p className="max-w-[inherit] truncate text-sm capitalize text-muted-foreground">
+        <p className="max-w-[inherit] truncate text-xl capitalize text-muted-foreground">
           Assessment
         </p>
       </div>

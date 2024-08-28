@@ -2,14 +2,34 @@
 
 import { Card, CardContent, CardHeader, Skeleton } from "@/components";
 import { useAuth } from "@/components/AuthProvider";
+import { Combobox, Input } from "@/components/Form";
 
-import { getGreeting, notEmpty, useInView } from "@/global";
+import { getGreeting, notEmpty, useForm, useInView, useSearch } from "@/global";
 
 import { useUsers } from "@/modules/Home";
+import { roleEnum } from "@/modules/Users";
+import { CalendarClock, Search } from "lucide-react";
+import { useWatch } from "react-hook-form";
+import { z } from "zod";
 
 const Home = () => {
+  const { control } = useForm({
+    schema: z.object({
+      search: z.string().nullish(),
+      role: roleEnum.nullish(),
+    }),
+  });
+  const [search, role] = useWatch({
+    control,
+    name: ["search", "role"],
+  });
+
+  const watchSearch = useSearch(search ?? "");
   const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useUsers({});
+    useUsers({
+      search: watchSearch,
+      role,
+    });
 
   const { user } = useAuth();
 
@@ -37,7 +57,40 @@ const Home = () => {
         </h2>
       </CardHeader>
 
-      <CardContent className="pt-2 px-0 grid grid-cols-1  gap-2">
+      <CardContent className="px-0 grid grid-cols-1  gap-2 py-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+          <h3>List of users.</h3>
+          <div className="flex gap-2 items-center flex-wrap justify-center">
+            <Input
+              inputType="controlled"
+              control={control}
+              name="search"
+              placeholder="Search..."
+              className="min-w-72 max-w-72"
+              leadingContent={() => {
+                return <Search className="text-muted-foreground " />;
+              }}
+            />
+            <Combobox
+              control={control}
+              name="role"
+              options={["User", "Admin", "Guest"]}
+              placeholder="Role"
+              className="min-w-72 max-w-72"
+            />
+          </div>
+        </div>
+
+        {!isPending && !isFetchingNextPage && totalDocs === 0 ? (
+          <div className="flex h-[400px] items-center justify-center rounded-md flex-1 border">
+            <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+              <CalendarClock className="size-6" />
+              <h3 className="mt-4 text-lg font-semibold">
+                No users available.
+              </h3>
+            </div>
+          </div>
+        ) : null}
         {totalDocs > 0
           ? users?.map((user, index) => {
               return user?.id ? (
