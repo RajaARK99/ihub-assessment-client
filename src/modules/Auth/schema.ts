@@ -13,6 +13,10 @@ const signUpFormSchema = z.object({
   lastName: nameZodSchema(true),
   email: emailZodSchema(true),
   password: passwordZodSchema,
+  mobileNumber: z.string().regex(/^[6-9]\d{9}$/, {
+    message:
+      "Invalid  mobile number. It should start with 6-9 and be 10 digits long.",
+  }),
   role: roleEnum.nullish(),
 });
 

@@ -16,8 +16,6 @@ type SignInResponse = Nullish<{
 
 type SignUpForm = z.infer<typeof signUpFormSchema>;
 
-type SignUpResponse = Nullish<{
-  message: string;
-}>;
+type SignUpResponse = Nullish<User>;
 
 export type { SignInForm, SignInResponse, SignUpForm, SignUpResponse };

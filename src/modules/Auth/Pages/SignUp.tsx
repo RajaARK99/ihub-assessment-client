@@ -88,6 +88,13 @@ const SignUp = () => {
             <Input
               inputType="controlled"
               control={control}
+              name="mobileNumber"
+              label={"Mobile"}
+              placeholder="Mobile..."
+            />
+            <Input
+              inputType="controlled"
+              control={control}
               name="password"
               label={"Password"}
               type="password"
